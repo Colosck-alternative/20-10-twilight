@@ -1,0 +1,443 @@
+<!DOCTYPE HTML PUBLIC "ML">
+
+<HTML>
+
+ <HEAD>
+
+  <TITLE> Chúc mừng ngày phụ nữ Việt Nam </TITLE>
+
+  <META NAME="Generator" CONTENT="EditPlus">
+
+  <META NAME="Author" CONTENT="">
+
+  <META NAME="Keywords" CONTENT="">
+
+  <META NAME="Description" CONTENT="">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+
+  html, body {
+
+  height: 100%;
+
+  padding: 0;
+
+  margin: 0;
+  
+  /* background-repeat: no-repeat; */
+background-color: black;
+
+
+}
+
+canvas {
+
+  position: fixed;
+  
+  top: 0;
+  
+  left: 0;
+
+  width: 100%;
+
+  height: 100%;
+  
+  z-index: 50;
+  
+  pointer-events: none;
+
+}
+
+    /* Screens */
+    .screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 100;
+    }
+
+    .screen.active {
+        display: flex;
+    }
+
+    /* Countdown Screen */
+    #countdown-screen {
+        background: linear-gradient(135deg, #1a0033 0%, #330033 50%, #1a0033 100%);
+    }
+
+    #countdown-number {
+        font-size: 200px;
+        font-weight: 700;
+        font-family: 'Pacifico', cursive;
+        color: #ff69b4;
+        text-shadow: 0 0 30px rgba(255, 105, 180, 0.8),
+                     0 0 60px rgba(255, 0, 247, 0.6),
+                     0 0 90px rgba(0, 255, 249, 0.4);
+        animation: pulse 1s ease-in-out infinite;
+    }
+
+    #countdown-text {
+        font-size: 30px;
+        font-family: 'Dancing Script', cursive;
+        color: #00fff9;
+        margin-top: 20px;
+        text-shadow: 0 0 10px rgba(0, 255, 249, 0.8);
+    }
+
+    /* Greeting Screen */
+    #greeting-screen {
+        background: linear-gradient(135deg, #1a0033 0%, #4a0e4e 50%, #1a0033 100%);
+    }
+
+    #greeting-container {
+        text-align: center;
+        padding: 50px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 30px;
+        border: 3px solid rgba(255, 105, 180, 0.8);
+        box-shadow: 0 0 50px rgba(255, 105, 180, 0.6),
+                    0 0 100px rgba(255, 0, 247, 0.4);
+        animation: greetingFadeIn 2s ease-in-out;
+        max-width: 800px;
+        backdrop-filter: blur(10px);
+    }
+
+    #greeting-title {
+        font-size: 50px;
+        font-weight: 700;
+        font-family: 'Pacifico', cursive;
+        color: #ff69b4;
+        text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+        margin-bottom: 30px;
+    }
+
+    #greeting-message {
+        font-size: 24px;
+        line-height: 1.8;
+        font-family: 'Quicksand', sans-serif;
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        margin-bottom: 20px;
+    }
+
+    #greeting-message p {
+        margin: 15px 0;
+        animation: slideIn 1s ease-out backwards;
+    }
+
+    #greeting-message p:nth-child(1) { animation-delay: 0.5s; }
+    #greeting-message p:nth-child(2) { animation-delay: 0.8s; }
+    #greeting-message p:nth-child(3) { animation-delay: 1.1s; }
+    #greeting-message p:nth-child(4) { animation-delay: 1.4s; }
+
+    /* Main Screen */
+    #main-screen {
+        background: transparent;
+    }
+
+    /* Slideshow Container */
+    #slideshow-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .slide {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transform: scale(1);
+        filter: blur(0px);
+        transition: opacity 2s ease-in-out, 
+                    transform 2s ease-in-out,
+                    filter 2s ease-in-out;
+        background-size: auto;
+        background-position: center;
+        background-repeat: repeat;
+    }
+
+    .slide.active {
+        opacity: 0.6;
+        transform: scale(1.05);
+        filter: blur(0px);
+    }
+
+    .slide.leaving {
+        opacity: 0;
+        transform: scale(1.1);
+        filter: blur(5px);
+    }
+
+    #name{
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        color: #ff00f7;
+        font-size: 35px;
+        font-weight: 600;
+        font-family: 'Pacifico', cursive;
+        text-shadow: 0 0 10px rgba(255, 0, 247, 0.8),
+                     0 0 20px rgba(255, 0, 247, 0.5);
+    }
+
+    #poem-container {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        text-align: center;
+        padding: 15px 25px;
+        background: rgba(0, 0, 0, 0.85);
+        border-radius: 15px;
+        border: 2px solid rgba(255, 0, 247, 0.5);
+        box-shadow: 0 0 20px rgba(0, 255, 249, 0.3), 
+                    0 0 40px rgba(255, 0, 247, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        max-width: 700px;
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    #poem-container.show {
+        opacity: 1;
+    }
+
+    .person-name {
+        font-size: 28px;
+        font-weight: 700;
+        color: #ff69b4;
+        text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+        margin-bottom: 15px;
+        font-family: 'Pacifico', cursive;
+    }
+
+    #poem-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #00fff9;
+        text-shadow: 0 0 8px rgba(0, 255, 249, 0.8);
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+        font-family: 'Dancing Script', cursive;
+    }
+
+    #poem-content {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        font-family: 'Quicksand', sans-serif;
+        font-style: italic;
+        margin-bottom: 8px;
+    }
+
+    #poem-content p {
+        margin: 4px 0;
+        animation: slideIn 1s ease-out backwards;
+    }
+
+    #poem-content p:nth-child(1) { animation-delay: 0.3s; }
+    #poem-content p:nth-child(2) { animation-delay: 0.5s; }
+    #poem-content p:nth-child(3) { animation-delay: 0.7s; }
+    #poem-content p:nth-child(4) { animation-delay: 0.9s; }
+    #poem-content p:nth-child(5) { animation-delay: 1.1s; }
+    #poem-content p:nth-child(6) { animation-delay: 1.3s; }
+    #poem-content p:nth-child(7) { animation-delay: 1.5s; }
+    #poem-content p:nth-child(8) { animation-delay: 1.7s; }
+
+    #poem-signature {
+        font-size: 14px;
+        color: #ff00f7;
+        text-shadow: 0 0 6px rgba(255, 0, 247, 0.6);
+        margin-top: 8px;
+        font-family: 'Dancing Script', cursive;
+        font-style: italic;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes glow {
+        0%, 100% {
+            box-shadow: 0 0 30px rgba(0, 255, 249, 0.4), 
+                        0 0 60px rgba(255, 0, 247, 0.3),
+                        inset 0 0 20px rgba(0, 255, 249, 0.1);
+        }
+        50% {
+            box-shadow: 0 0 40px rgba(0, 255, 249, 0.6), 
+                        0 0 80px rgba(255, 0, 247, 0.5),
+                        inset 0 0 30px rgba(0, 255, 249, 0.2);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+    }
+
+    @keyframes greetingFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8) translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    /* Responsive - điều chỉnh cho màn hình nhỏ */
+    @media (max-width: 768px) {
+        #poem-container {
+            max-width: 90%;
+            padding: 10px 15px;
+        }
+        #poem-title {
+            font-size: 16px;
+        }
+        #poem-content {
+            font-size: 12px;
+        }
+        #poem-signature {
+            font-size: 12px;
+        }
+    }
+    .screen {
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .screen.fade-in {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+
+ </HEAD>
+
+
+ <BODY style="position: relative;">
+
+  <canvas id="pinkboard"></canvas>
+
+  <div id="countdown-screen" class="screen active">
+    <div id="countdown-number">10</div>
+    <div id="countdown-text">🌸 Chuẩn bị nhé... 🌸</div>
+  </div>
+
+  <div id="greeting-screen" class="screen">
+    <div id="greeting-container">
+      <div id="greeting-title">🌸 Chúc Mừng 20/10 🌸</div>
+      <div id="greeting-message">
+        <p>✨ Kính chúc tất cả các chị em phụ nữ trong dàn nhân sự Twilight ✨</p>
+        <p>💐 Luôn xinh đẹp, rạng rỡ và hạnh phúc 💐</p>
+        <p>🌺 Sức khỏe dồi dào, thành công rực rỡ 🌺</p>
+        <p>💝 Mãi mãi là niềm tự hào và nguồn cảm hứng cho mọi người 💝</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="main-screen" class="screen">
+    <div id="slideshow-container">
+        <div class="slide active" style="background-image: url('./anh1.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh2.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh3.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh4.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh5.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh6.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh7.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh8.jpg');"></div>
+        <div class="slide" style="background-image: url('./anh9.jpg');"></div>
+    </div>
+
+    <div id="name">🌸 Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10 🌸</div>
+    
+    <div id="poem-container">
+      <div class="person-name" id="person-name">Name....</div>
+      <div id="poem-content">
+        <p>Lời chúc riêng sẽ hiển thị ở đây...</p>
+      </div>
+      <div id="poem-signature">💝 Chúc chị luôn xinh đẹp và hạnh phúc 💝</div>
+    </div>
+  </div>
+
+  <script>
+(()=>{const d=[{name:"Chị Trân",wishes:["Chúc Trân luôn tràn đầy năng lượng,","Giữ mãi tinh thần tích cực, nhiệt huyết.","Mau mau chóng lớn, sớm có người yêu,","20/10 thật ý nghĩa và vui vẻ! 🌸"]},{name:"Chị Mthu (bel)",wishes:["Chúc chị luôn hăng say trong công việc,","Mỗi ngày là một hành trình mới đầy cảm hứng.","Có tình yêu đẹp (hi vọng lâu dài) với bạn TT","Vui vẻ và tự tin trong mọi thử thách! 💐"]},{name:"Chị Hạnh (trẩu)",wishes:["Chúc chị có những ngày học tập vui vẻ (mặc dù đôi khi không vui),","Tinh thần vững vàng trước các anh trap boiz.","Luôn được bạn bè quý mến, tin tưởng","20/10 tràn ngập tiếng cười! 🌺"]},{name:"Chị Ribu (trẩu)",wishes:["Chúc chị có những ngày học tập vui vẻ (mặc dù đôi khi không vui),","Tinh thần vững vàng trước các anh trap boiz.","Luôn được bạn bè quý mến, tin tưởng","Một ngày 20/10 thật rạng rỡ! 🌷"]},{name:"Chị Thảo",wishes:["Chúc chị đạt nhiều thành tích nổi bật,","Sau này yêu né được mấy thằng tồi.","Tinh thần học tập luôn tươi mới,","Một ngày 20/10 thật đáng nhớ! 💝"]},{name:"Chị Bụp",wishes:["Chúc chị luôn lan tỏa năng lượng tích cực (ví dụ chuyên duyệt confession)","Luôn giữ nụ cười và sự tự tin.","Chém gà siêu đỉnh","Niềm vui ngập tràn trong ngày 20/10! 🌹"]},{name:"Chị Minh Thư (ny của chị Thanh)",wishes:["Chị Thanh là con trai nên đành chúc chị Minh Thu nhé!","Chúc chị có những ngày sống và làm việc tràn đầy hứng khởi.","Mọi kế hoạch đều thuận lợi suôn sẻ","Mau chóng tán đổ anh CT! ","20/10 thật vui vẻ và đáng nhớ! 🍂"]}];
+let c=10,n=document.getElementById('countdown-number'),a=document.getElementById('countdown-screen'),b=document.getElementById('greeting-screen'),e=document.getElementById('main-screen');
+const f=setInterval(()=>{c--;if(c>0)n.textContent=c;else if(c===0){n.textContent='0';n.style.color='#00fff9'}else{clearInterval(f);setTimeout(()=>{a.classList.remove('active');b.classList.add('active');const g=1000;setTimeout(()=>{b.classList.add('fade-out');e.classList.add('active','fade-in');setTimeout(()=>{b.classList.remove('active','fade-out');e.classList.remove('fade-in');e.classList.add('active');startShow()},g)},13000)},1000)}},1000);
+let i=0,s=document.querySelectorAll('.slide'),t=s.length,p=document.getElementById('poem-container'),u=document.getElementById('person-name'),v=document.getElementById('poem-content'),w, x=document.getElementById('slideshow-container');
+const A=(idx=>{const o=d[idx%d.length];u.textContent=o.name;v.innerHTML=o.wishes.map(k=>`<p>${k}</p>`).join('');p.classList.remove('show');setTimeout(()=>p.classList.add('show'),500)});
+const B=(()=>{p.classList.remove('show');s[i].classList.add('leaving');s[i].classList.remove('active');i=(i+1)%t;setTimeout(()=>{const ns=s[i];ns.classList.add('active');ns.classList.remove('leaving');if(x&&ns.parentNode===x)x.appendChild(ns);A(i)},100);setTimeout(()=>{s.forEach((sl,idx)=>{if(idx!==i)sl.classList.remove('leaving')})},2000)});
+function startShow(){A(0);s.forEach((sl)=>sl.classList.remove('active','leaving'));s[0].classList.add('active');w=setInterval(B,25000)} 
+window.startShow=startShow; // optional exposure for debugging
+})();
+</script>
+
+
+<script>
+(()=>{const C={p:{len:500,dur:2,vel:100,fx:-0.75,sz:30}};!function(){var b=0,c=["ms","moz","webkit","o"];for(var a=0;a<c.length&&!window.requestAnimationFrame;++a){window.requestAnimationFrame=window[c[a]+"RequestAnimationFrame"];window.cancelAnimationFrame=window[c[a]+"CancelAnimationFrame"]||window[c[a]+"CancelRequestAnimationFrame"]}if(!window.requestAnimationFrame){window.requestAnimationFrame=function(h,e){var d=new Date().getTime();var f=Math.max(0,16-(d-b));var g=window.setTimeout(function(){h(d+f)},f);b=d+f;return g}}if(!window.cancelAnimationFrame){window.cancelAnimationFrame=function(d){clearTimeout(d)}}}();
+class V{constructor(x=0,y=0){this.x=x;this.y=y}clone(){return new V(this.x,this.y)}len(L){if(typeof L==='undefined')return Math.sqrt(this.x*this.x+this.y*this.y);this.norm();this.x*=L;this.y*=L;return this}norm(){const l=Math.sqrt(this.x*this.x+this.y*this.y)||1;this.x/=l;this.y/=l;return this}};
+class E{constructor(){this.pos=new V();this.vel=new V();this.acc=new V();this.age=0}init(x,y,dx,dy){this.pos.x=x;this.pos.y=y;this.vel.x=dx;this.vel.y=dy;this.acc.x=dx*C.p.fx;this.acc.y=dy*C.p.fx;this.age=0}update(dt){this.pos.x+=this.vel.x*dt;this.pos.y+=this.vel.y*dt;this.vel.x+=this.acc.x*dt;this.vel.y+=this.acc.y*dt;this.age+=dt}draw(ctx,img){const ease=t=>(--t)*t*t+1;const sz=img.width*ease(this.age/C.p.dur);ctx.globalAlpha=1-this.age/C.p.dur;ctx.drawImage(img,this.pos.x-sz/2,this.pos.y-sz/2,sz,sz)}};
+class P{constructor(len){this.arr=new Array(len).fill(0).map(()=>new E());this.firstActive=0;this.firstFree=0;this.limit=C.p.dur}add(x,y,dx,dy){this.arr[this.firstFree].init(x,y,dx,dy);this.firstFree=(this.firstFree+1)%this.arr.length;if(this.firstActive===this.firstFree)this.firstActive=(this.firstActive+1)%this.arr.length}update(dt){const a=this.arr;let i=this.firstActive;while(i!==this.firstFree){a[i].update(dt);i=(i+1)%a.length}while(a[this.firstActive].age>=this.limit&&this.firstActive!==this.firstFree)this.firstActive=(this.firstActive+1)%a.length}draw(ctx,img){const a=this.arr;let i=this.firstActive;while(i!==this.firstFree){a[i].draw(ctx,img);i=(i+1)%a.length}}};
+((k)=>{const ctx=k.getContext('2d'),pool=new P(C.p.len),rate=C.p.len/C.p.dur;let last;const heart=t=>new V(160*Math.pow(Math.sin(t),3),130*Math.cos(t)-50*Math.cos(2*t)-20*Math.cos(3*t)-10*Math.cos(4*t)+25);const image=(function(){const c=document.createElement('canvas'),g=c.getContext('2d');c.width=C.p.sz;c.height=C.p.sz;const tr=t=>{const v=heart(t);v.x=C.p.sz/2+v.x*C.p.sz/350;v.y=C.p.sz/2-v.y*C.p.sz/350;return v};g.beginPath();let T=-Math.PI;let vv=tr(T);g.moveTo(vv.x,vv.y);while(T<Math.PI){T+=0.01;vv=tr(T);g.lineTo(vv.x,vv.y)}g.closePath();g.fillStyle='#ff69b4';g.fill();const im=new Image();im.src=c.toDataURL();return im})();const loop=()=>{requestAnimationFrame(loop);const now=Date.now()/1000;const dt=now-(last||now);last=now;ctx.clearRect(0,0,k.width,k.height);const amt=rate*dt;for(let i=0;i<amt;i++){const p1=heart(Math.PI-2*Math.PI*Math.random());const p2=p1.clone().len(C.p.vel);pool.add(k.width/2+p1.x,k.height/2-p1.y,p2.x,-p2.y)}pool.update(dt);pool.draw(ctx,image)};const onResize=()=>{k.width=k.clientWidth;k.height=k.clientHeight};window.onresize=onResize;setTimeout(()=>{onResize();loop()},10)})(document.getElementById('pinkboard'));
+})();
+</script>
+
+ </BODY>
+
+</HTML>
